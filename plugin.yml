@@ -1,0 +1,9 @@
+name: Elo
+main: me.Islandscout.elo.Main
+version: 1.0
+author: Islandscout
+description: An Elo ranking system
+commands:
+    elo:
+        description: Manages elo
+        usage: /<command> <args>
