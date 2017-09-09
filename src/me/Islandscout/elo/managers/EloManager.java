@@ -10,33 +10,44 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class EloManager implements Listener {
+import java.util.HashMap;
+import java.util.UUID;
+
+public class EloManager {
 	
 	private Main plugin;
 	public EloManager(Main main) {
 		this.plugin = main;
 	}
 
+	public HashMap<UUID, Double> elo = new HashMap<>();
 
-	@EventHandler(priority = EventPriority.LOWEST)
 	public void onDeath(PlayerDeathEvent e) {
 		if(e.getEntity().getKiller() != null && e.getEntity().getKiller() instanceof Player && e.getEntity() instanceof Player) {
 			Player winner = e.getEntity().getKiller();
 			Player looser = e.getEntity();
-			Double winnerElo = plugin.getEloCalculator().calculateEloWinner(winner, looser);
-			Double looserElo = plugin.getEloCalculator().calculateEloLooser(winner, looser);
-			plugin.getEloCalculator().setElo(winner, winnerElo);
-			plugin.getEloCalculator().setElo(looser, looserElo);
-			winner.sendMessage(ChatColor.GOLD + "New Elo: " + Math.round(plugin.getEloCalculator().getElo(winner)));
-			looser.sendMessage(ChatColor.GOLD + "New Elo: " + Math.round(plugin.getEloCalculator().getElo(looser)));
+			double winnerElo = plugin.getEloCalculator().calculateEloWinner(winner, looser);
+			double looserElo = plugin.getEloCalculator().calculateEloLooser(winner, looser);
+			elo.put(winner.getUniqueId(), winnerElo);
+			elo.put(looser.getUniqueId(), looserElo);
+			winner.sendMessage(ChatColor.GOLD + "New Elo: " + Math.round(elo.get(winner.getUniqueId())));
+			looser.sendMessage(ChatColor.GOLD + "New Elo: " + Math.round(elo.get(looser.getUniqueId())));
 		}
 	}
-	@EventHandler(priority = EventPriority.LOWEST)
+
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		if(plugin.getEloCalculator().getElo(p) == -1) {
-			plugin.getEloCalculator().setElo(p, plugin.getConfigManager().getDefaultElo());
+		if(!elo.containsKey(p.getUniqueId())) {
+			elo.put(p.getUniqueId(), plugin.getConfigManager().getDefaultElo());
 		}
 	}
+
+	public double getElo(Player p) {
+	    return elo.get(p.getUniqueId());
+    }
+
+    public void setElo(Player p, double value) {
+	    elo.put(p.getUniqueId(), value);
+    }
 		
 }

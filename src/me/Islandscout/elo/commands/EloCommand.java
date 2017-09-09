@@ -43,7 +43,7 @@ public class EloCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.RED + "Third argument must be a number!");
 				return true;
 			}
-			plugin.getEloCalculator().setElo(target, setElo);
+			plugin.getEloManager().setElo(target, setElo);
 			sender.sendMessage(ChatColor.YELLOW + "" + args[1] + "'s Elo has been set to " + setElo);
 			return true;
 		}
@@ -53,7 +53,7 @@ public class EloCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.RED + "Player not found.");
 				return true;
 			}
-			double elo = plugin.getEloCalculator().getElo(target);
+			double elo = plugin.getEloManager().getElo(target);
 			sender.sendMessage(ChatColor.YELLOW + "" + args[1] + "'s Elo is " + elo);
 			return true;
 		}
@@ -63,7 +63,7 @@ public class EloCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.RED + "Player not found.");
 				return true;
 			}
-			plugin.getEloCalculator().setElo(target, plugin.getConfigManager().getDefaultElo());
+			plugin.getEloManager().setElo(target, plugin.getConfigManager().getDefaultElo());
 			sender.sendMessage(ChatColor.YELLOW + "" + args[1] + "'s Elo has been reset to " + plugin.getConfigManager().getDefaultElo());
 			return true;
 		}
